@@ -57,9 +57,13 @@
                             <excludes>
                                 <exclude>WEB-INF/classes/application.properties</exclude>
                                 <exclude>WEB-INF/classes/log4j2.xml</exclude>
+                                <exclude>WEB-INF/classes/service/*.json</exclude>
                             </excludes>
                         </overlay>
                     </overlays>
+                    <dependentWarExcludes>
+                        **/service/*.json
+                    </dependentWarExcludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -130,6 +134,15 @@
                 <!--
                 ...Additional dependencies may be placed here...
                 -->
+                <!--
+                 测试
+                -->
+                <dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-support-json-service-registry</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>
+
                 <dependency>
                     <groupId>org.apereo.cas</groupId>
                     <artifactId>cas-server-core-web-api</artifactId>
