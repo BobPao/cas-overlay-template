@@ -58,6 +58,7 @@
                                 <exclude>WEB-INF/classes/application.properties</exclude>
                                 <exclude>WEB-INF/classes/log4j2.xml</exclude>
                                 <exclude>WEB-INF/classes/service/*.json</exclude>
+                                <exclude>WEB-INF/classes/static/js/cas.js</exclude>
                             </excludes>
                         </overlay>
                     </overlays>
