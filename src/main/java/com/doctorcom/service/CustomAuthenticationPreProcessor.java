@@ -26,7 +26,7 @@ public class CustomAuthenticationPreProcessor implements AuthenticationPreProces
      */
     @Override
     public int getOrder() {
-        return 1;
+        return 2;
     }
 
     @Override

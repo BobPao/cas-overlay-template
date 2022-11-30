@@ -1,5 +1,6 @@
 package com.doctorcom.service;
 
+import com.doctorcom.bean.CustomUsernamePasswordCaptchaCredential;
 import com.doctorcom.exceptions.GAuthMfaException;
 import org.apereo.cas.authentication.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -10,7 +11,8 @@ import java.util.Map;
 
 /**
  * Google Authenticator 身份验证器预处理器
- * 二次验证码连续 6 次输入错误暂时锁定
+ * 二次验证码连续 5 次输入错误暂时锁定
+ * 不管第六次是否正确，都是会提示超限
  */
 public class GAuthMFAPreProcessor implements AuthenticationPreProcessor {
 
@@ -21,7 +23,7 @@ public class GAuthMFAPreProcessor implements AuthenticationPreProcessor {
      */
     @Override
     public int getOrder() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class GAuthMFAPreProcessor implements AuthenticationPreProcessor {
             } else {
                 attributes.getRequest().getSession().setAttribute("mfa-retry-block", true);
                 final Map<String, Throwable> map = new HashMap<>();
-                map.put("GAuthMfaException", new GAuthMfaException("重试次数超限"));
+                map.put("GAuthMfaException", new GAuthMfaException());
                 throw new AuthenticationException(map);
             }
         }
@@ -46,6 +48,6 @@ public class GAuthMFAPreProcessor implements AuthenticationPreProcessor {
 
     @Override
     public boolean supports(Credential credential) {
-        return credential instanceof OneTimeTokenCredential;
+        return credential instanceof CustomUsernamePasswordCaptchaCredential;
     }
 }
