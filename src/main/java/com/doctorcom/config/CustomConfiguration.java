@@ -3,8 +3,11 @@ package com.doctorcom.config;
 import com.doctorcom.bean.CustomErrorAttributes;
 import com.doctorcom.service.CustomAuthenticationPreProcessor;
 import com.doctorcom.service.GAuthMFAPreProcessor;
+import com.doctorcom.service.RememberMeUsernamePasswordCaptchaAuthenticationHandler;
 import com.google.code.kaptcha.servlet.KaptchaServlet;
+import org.apereo.cas.authentication.principal.DefaultPrincipalFactory;
 import org.apereo.cas.configuration.CasConfigurationProperties;
+import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.web.flow.CasWebflowConfigurer;
 import org.apereo.cas.web.flow.config.CasWebflowContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,9 @@ public class CustomConfiguration {
     @Autowired
     private CasConfigurationProperties casProperties;
 
+    @Autowired
+    @Qualifier("servicesManager")
+    private ServicesManager servicesManager;
 
     @Autowired
     @Qualifier("loginFlowRegistry")
@@ -79,7 +85,7 @@ public class CustomConfiguration {
     @ConditionalOnMissingBean(name = "customAuthenticationEventExecutionPlanConfigurer")
     @Bean
     public CustomAuthenticationEventExecutionPlanConfigurer customAuthenticationEventExecutionPlanConfigurer() {
-        return new CustomAuthenticationEventExecutionPlanConfigurer(customAuthenticationPreProcessor(), gAuthMFAPreProcessor());
+        return new CustomAuthenticationEventExecutionPlanConfigurer(customAuthenticationPreProcessor(), gAuthMFAPreProcessor(), rememberMeUsernamePasswordCaptchaAuthenticationHandler());
     }
 
     @Bean
@@ -92,4 +98,15 @@ public class CustomConfiguration {
     public GAuthMFAPreProcessor gAuthMFAPreProcessor() {
         return new GAuthMFAPreProcessor();
     }
+
+    @Bean
+    public RememberMeUsernamePasswordCaptchaAuthenticationHandler rememberMeUsernamePasswordCaptchaAuthenticationHandler() {
+        RememberMeUsernamePasswordCaptchaAuthenticationHandler handler = new RememberMeUsernamePasswordCaptchaAuthenticationHandler(
+                RememberMeUsernamePasswordCaptchaAuthenticationHandler.class.getSimpleName(),
+                servicesManager,
+                new DefaultPrincipalFactory(),
+                9);
+        return handler;
+    }
+
 }
